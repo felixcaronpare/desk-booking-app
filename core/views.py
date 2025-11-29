@@ -3,18 +3,40 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib import messages
 from .models import Desk, Booking
-from datetime import datetime
+from datetime import datetime, timedelta
 
 @login_required
 def floor_plan(request):
+    today = timezone.now().date()
+    # Calculate start of the week (Monday)
+    start_of_week = today - timedelta(days=today.weekday())
+    
+    # Generate list of 5 workdays (Mon-Fri)
+    week_days = []
+    for i in range(5):
+        day = start_of_week + timedelta(days=i)
+        week_days.append({
+            'date': day,
+            'day_name': day.strftime('%A'),
+            'is_today': day == today
+        })
+
     date_str = request.GET.get('date')
     if date_str:
         try:
             selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
         except ValueError:
-            selected_date = timezone.now().date()
+            selected_date = today
     else:
-        selected_date = timezone.now().date()
+        selected_date = today
+
+    # Ensure selected date is within the current work week (Mon-Fri)
+    # If not, default to Monday of current week (or today if it's a workday)
+    if selected_date < start_of_week or selected_date > start_of_week + timedelta(days=4):
+         if today >= start_of_week and today <= start_of_week + timedelta(days=4):
+             selected_date = today
+         else:
+             selected_date = start_of_week
 
     desks = Desk.objects.all().order_by('row', 'col')
     bookings = Booking.objects.filter(date=selected_date)
@@ -39,6 +61,7 @@ def floor_plan(request):
         'desk_data': desk_data,
         'selected_date': selected_date,
         'my_booking': my_booking,
+        'week_days': week_days,
     }
     return render(request, 'core/floor_plan.html', context)
 
@@ -51,6 +74,15 @@ def book_desk(request, desk_id):
         except ValueError:
             messages.error(request, "Invalid date.")
             return redirect('floor_plan')
+
+        # Validate date is within current work week
+        today = timezone.now().date()
+        start_of_week = today - timedelta(days=today.weekday())
+        end_of_week = start_of_week + timedelta(days=4)
+        
+        if date < start_of_week or date > end_of_week:
+             messages.error(request, "You can only book desks for the current work week (Mon-Fri).")
+             return redirect('floor_plan')
 
         # Check if user already has a booking for this date
         if Booking.objects.filter(user=request.user, date=date).exists():
