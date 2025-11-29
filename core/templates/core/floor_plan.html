@@ -104,7 +104,8 @@
                                 bg-emerald-50 border-emerald-500 shadow-md ring-4 ring-emerald-100
                             {% else %}
                                 bg-slate-50 border-slate-100 text-slate-300 cursor-not-allowed
-                            {% endif %}" {% if item.status=='available' %}
+                            {% endif %}" {% if item.status == "available" %}
+
                         onclick="document.getElementById('book-form-{{ item.desk.id }}').submit();" {% endif %}>
                         <!-- Icon/Status Indicator -->
                         <div class="mb-1">
