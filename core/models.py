@@ -3,10 +3,11 @@ from django.contrib.auth.models import User
 
 class Desk(models.Model):
     name = models.CharField(max_length=100)
-    location = models.CharField(max_length=100)
+    row = models.IntegerField(default=0)
+    col = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"{self.name} ({self.location})"
+        return f"{self.name} (Row: {self.row}, Col: {self.col})"
 
 
 class Booking(models.Model):
