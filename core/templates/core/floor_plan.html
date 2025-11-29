@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desk Booking Floor Plan</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(6, 100px);
+            grid-template-rows: repeat(4, 100px);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .desk {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            background-color: white;
+            transition: transform 0.1s;
+        }
+        .desk:hover {
+            transform: scale(1.05);
+        }
+        .desk.booked {
+            background-color: #ffcccc; /* Redish */
+            cursor: not-allowed;
+        }
+        .desk.my_booking {
+            background-color: #ccffcc; /* Greenish */
+        }
+        .desk-name {
+            font-weight: bold;
+        }
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .box {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #ccc;
+        }
+        .box.available { background-color: white; }
+        .box.booked { background-color: #ffcccc; }
+        .box.my_booking { background-color: #ccffcc; }
+        
+        form { margin: 0; }
+    </style>
+</head>
+<body>
+
+    <h1>Desk Booking</h1>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="controls">
+        <form method="get" action="">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" value="{{ selected_date|date:'Y-m-d' }}" onchange="this.form.submit()">
+        </form>
+        
+        {% if my_booking %}
+            <div>
+                You have booked: <strong>{{ my_booking.desk.name }}</strong>
+                <form method="post" action="{% url 'unbook_desk' my_booking.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Unbook</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="grid-container">
+        {% for item in desk_data %}
+            <div class="desk {{ item.status }}" 
+                 style="grid-row: {{ item.desk.row|add:'1' }}; grid-column: {{ item.desk.col|add:'1' }};"
+                 {% if item.status == 'available' %}
+                 onclick="document.getElementById('book-form-{{ item.desk.id }}').submit();"
+                 {% endif %}
+            >
+                <div class="desk-name">{{ item.desk.name }}</div>
+                
+                {% if item.status == 'available' %}
+                <form id="book-form-{{ item.desk.id }}" method="post" action="{% url 'book_desk' item.desk.id %}" style="display:none;">
+                    {% csrf_token %}
+                    <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+                </form>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><div class="box available"></div> Available</div>
+        <div class="legend-item"><div class="box booked"></div> Booked</div>
+        <div class="legend-item"><div class="box my_booking"></div> My Booking</div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        Logged in as: {{ request.user.username }} | <a href="/admin/logout/">Logout</a>
+    </div>
+
+</body>
+</html>
