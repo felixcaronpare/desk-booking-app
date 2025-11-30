@@ -30,7 +30,9 @@ allowed_hosts_env = os.getenv("ALLOWED_HOSTS", "")
 
 ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(",") if host.strip()]
 
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS").split(",")
+csrf_trusted_origins_env = os.getenv("CSRF_TRUSTED_ORIGINS", "")
+
+CSRF_TRUSTED_ORIGINS = [host.strip() for host in csrf_trusted_origins_env.split(",") if host.strip()]
 
 # Application definition
 
