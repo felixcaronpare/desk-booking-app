@@ -5,8 +5,13 @@ class Command(BaseCommand):
     help = 'Populates the database with 24 desks in a 4x6 grid'
 
     def handle(self, *args, **kwargs):
-        Desk.objects.all().delete()
+        # Check if desks already exist
+        if Desk.objects.exists():
+            count = Desk.objects.count()
+            self.stdout.write(self.style.WARNING(f'Desks already exist ({count} desks found). Skipping setup.'))
+            return
         
+        # Create desks only if none exist
         rows = 4
         cols = 6
         count = 1
