@@ -82,54 +82,6 @@ WSGI_APPLICATION = "booking.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# ======== For localhost ========
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
-
-# os.environ.setdefault("PGDATABASE", "db")
-# os.environ.setdefault("PGUSER", "user")
-# os.environ.setdefault("PGPASSWORD", "postgres")
-# os.environ.setdefault("PGHOST", "localhost")
-# os.environ.setdefault("PGPORT", "5432")
-
-# # ======== For production ========
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.environ["PGDATABASE"],
-#         'USER': os.environ["PGUSER"],
-#         'PASSWORD': os.environ["PGPASSWORD"],
-#         'HOST': os.environ["PGHOST"],
-#         'PORT': os.environ["PGPORT"],
-#     }
-# }
-
-# if os.getenv("PGHOST"):
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': os.getenv("PGDATABASE", "db"),
-#             'USER': os.getenv("PGUSER", "postgres"),
-#             'PASSWORD': os.getenv("PGPASSWORD", "postgres"),
-#             'HOST': os.getenv("PGHOST"),
-#             'PORT': os.getenv("PGPORT", "5432"),
-#         }
-#     }
-# else:
-#     # Local fallback: SQLite
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.sqlite3",
-#             "NAME": BASE_DIR / "db.sqlite3",
-#         }
-#     }
-
-
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
