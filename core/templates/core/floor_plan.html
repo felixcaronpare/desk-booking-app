@@ -3,26 +3,26 @@
 {% block title %}Floor Plan - Desk Booking{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-4xl mx-auto px-4 py-10">
+<div class="w-full max-w-4xl mx-auto px-4 py-3">
 
     <!-- Header -->
-    <div class="text-center mb-8">
+    <!-- <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-white mb-2">Desk Booking</h1>
         <p class="text-white/70">Select a desk for the week</p>
-    </div>
+    </div> -->
 
     <!-- Controls & Navigation -->
-    <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-6 mb-8">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-3 mb-3">
         <div class="flex flex-col md:flex-row justify-between items-center gap-6">
 
             <!-- Week Navigation -->
-            <div class="flex bg-white/5 p-1 rounded-xl overflow-x-auto max-w-full">
+            <div class="flex bg-slate-100 p-1 rounded-xl overflow-x-auto max-w-full">
                 {% for day in week_days %}
                 <a href="?date={{ day.date|date:'Y-m-d' }}" class="flex flex-col items-center justify-center px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 min-w-[80px]
                        {% if day.date == selected_date %}
-                           bg-white/20 text-white shadow-lg ring-2 ring-white/30
+                           bg-white text-blue-600 shadow-sm ring-1 ring-slate-200
                        {% else %}
-                           text-white/70 hover:text-white hover:bg-white/10
+                           text-slate-500 hover:text-slate-700 hover:bg-slate-200
                        {% endif %}">
                     <span class="text-xs uppercase tracking-wider opacity-70">{{ day.day_name|slice:":3" }}</span>
                     <span class="text-lg font-bold">{{ day.date|date:"d" }}</span>
@@ -32,75 +32,57 @@
 
             <!-- My Booking Status -->
             {% if my_booking %}
-            <div class="flex items-center gap-4 bg-emerald-500/20 px-5 py-3 rounded-xl border border-emerald-400/30 backdrop-blur-sm">
-                <div class="text-sm text-emerald-100">
-                    Booked: <span class="font-bold text-white">{{ my_booking.desk.name }}</span>
+            <div class="flex items-center gap-4 bg-emerald-50 px-5 py-3 rounded-xl border border-emerald-100">
+                <div class="text-sm text-emerald-800">
+                    Booked: <span class="font-bold text-emerald-900">{{ my_booking.desk.name }}</span>
                 </div>
                 <form method="post" action="{% url 'unbook_desk' my_booking.id %}">
                     {% csrf_token %}
                     <button type="submit"
-                        class="text-xs bg-white/20 text-white hover:bg-red-500 border border-white/30 px-3 py-1.5 rounded-md font-semibold transition-all duration-200">
+                        class="text-xs bg-white text-emerald-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 border border-emerald-200 px-3 py-1.5 rounded-md font-semibold transition-all duration-200">
                         Cancel
                     </button>
                 </form>
             </div>
             {% else %}
-            <div class="text-sm text-white/60 font-medium px-2">
+            <div class="text-sm text-slate-500 font-medium px-2">
                 No booking for this day
             </div>
             {% endif %}
         </div>
     </div>
 
-    <!-- Floor Plan Grid -->
-    <div class="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8 mb-8 relative overflow-hidden">
-        <!-- Decorative background element -->
-        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+    <!-- Floor Plan Container -->
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-8 mb-3 relative overflow-hidden" style="min-height: 700px;">
+        <!-- Background Image -->
+        <div class="absolute inset-0 w-full h-full opacity-30 pointer-events-none">
+            {% load static %}
+            <img src="{% static 'core/images/floor_plan_bg.png' %}" alt="Floor Plan Background" class="w-full h-full object-contain">
         </div>
 
-        <div class="grid grid-cols-6 gap-4 mx-auto max-w-fit">
+        <!-- Absolute Positioned Desks -->
+        <div class="relative w-full h-full" style="aspect-ratio: 4/3;">
             {% for item in desk_data %}
-            <div class="relative group"
-                style="grid-row: {{ item.desk.row|add:'1' }}; grid-column: {{ item.desk.col|add:'1' }};">
+            <div class="absolute group"
+                style="left: {{ item.desk.x }}%; top: {{ item.desk.y }}%; transform: translate(-50%, -50%);">
 
                 <!-- Desk Card -->
-                <div class="w-24 h-24 rounded-xl flex flex-col items-center justify-center transition-all duration-300 border-2
+                <div class="w-16 h-12 md:w-20 md:h-14 rounded-lg flex flex-col items-center justify-center transition-all duration-300 border-2 shadow-sm
                         {% if item.status == 'available' %}
-                            bg-white/90 border-white/50 hover:border-blue-400 hover:shadow-lg hover:-translate-y-1 cursor-pointer group-hover:ring-4 group-hover:ring-blue-400/30
+                            bg-white border-slate-300 hover:border-blue-500 hover:shadow-lg hover:-translate-y-1 cursor-pointer group-hover:ring-2 group-hover:ring-blue-200
                         {% elif item.status == 'my_booking' %}
-                            bg-emerald-400/30 border-emerald-400 shadow-md ring-4 ring-emerald-400/30 backdrop-blur-sm
+                            bg-emerald-100 border-emerald-500 shadow-md ring-2 ring-emerald-200
                         {% else %}
-                            bg-white/20 border-white/30 text-white/40 cursor-not-allowed backdrop-blur-sm
+                            bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed
                         {% endif %}" {% if item.status == "available" %}
 
                     onclick="document.getElementById('book-form-{{ item.desk.id }}').submit();" {% endif %}>
-                    <!-- Icon/Status Indicator -->
-                    <div class="mb-1">
-                        {% if item.status == 'my_booking' %}
-                        <svg class="w-6 h-6 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        {% elif item.status == 'booked' %}
-                        <svg class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                        {% else %}
-                        <svg class="w-6 h-6 text-slate-600 group-hover:text-blue-500 transition-colors" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
-                            </path>
-                        </svg>
-                        {% endif %}
-                    </div>
-
+                    
                     <span class="text-xs font-bold
-                            {% if item.status == 'my_booking' %} text-emerald-100
-                            {% elif item.status == 'booked' %} text-white/50
+                            {% if item.status == 'my_booking' %} text-emerald-800
+                            {% elif item.status == 'booked' %} text-slate-400
                             {% else %} text-slate-700 group-hover:text-blue-600 {% endif %}">
-                        {{ item.desk.name }}
+                        {{ item.desk.name|slice:"5:" }}
                     </span>
 
                     {% if item.status == 'available' %}
@@ -117,17 +99,17 @@
     </div>
 
     <!-- Legend -->
-    <div class="flex justify-center gap-8 text-sm font-medium text-white/80">
+    <div class="flex justify-center gap-8 text-sm font-medium text-slate-600">
         <div class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full bg-white border-2 border-white/50"></div>
+            <div class="w-3 h-3 rounded-full bg-white border-2 border-slate-300"></div>
             <span>Available</span>
         </div>
         <div class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full bg-white/20 border-2 border-white/30"></div>
+            <div class="w-3 h-3 rounded-full bg-slate-200 border-2 border-slate-300"></div>
             <span>Booked</span>
         </div>
         <div class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full bg-emerald-400/30 border-2 border-emerald-400"></div>
+            <div class="w-3 h-3 rounded-full bg-emerald-100 border-2 border-emerald-500"></div>
             <span>My Booking</span>
         </div>
     </div>

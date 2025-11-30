@@ -87,7 +87,7 @@ def floor_plan(request):
          else:
              selected_date = start_of_week
 
-    desks = Desk.objects.all().order_by('row', 'col')
+    desks = Desk.objects.all()
     bookings = Booking.objects.filter(date=selected_date)
     
     booked_desk_ids = bookings.values_list('desk_id', flat=True)
