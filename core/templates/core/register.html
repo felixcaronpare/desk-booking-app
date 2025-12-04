@@ -1,6 +1,6 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Register - Desk Booking{% endblock %}
+{% block title %}Inscription - BookTonBureau{% endblock %}
 
 {% block content %}
 <div class="min-h-screen flex items-center justify-center px-4 py-12 bg-slate-50">
@@ -8,8 +8,8 @@
         <!-- Registration Card -->
         <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
             <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-slate-800 mb-2">Create Account</h2>
-                <p class="text-slate-500">Join us to start booking desks</p>
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Inscription</h2>
+                <p class="text-slate-500">Rejoignez-nous pour réserver vos bureaux</p>
             </div>
 
             <form method="post" class="space-y-6">
@@ -23,13 +23,13 @@
 
                 <div>
                     <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-2">
-                        Username
+                        Nom d'utilisateur
                     </label>
                     {{ form.username }}
                     {% if form.username.errors %}
                     <p class="mt-1 text-sm text-red-500">{{ form.username.errors.0 }}</p>
                     {% else %}
-                    <p class="mt-1 text-xs text-slate-400">Choose a unique username</p>
+                    <p class="mt-1 text-xs text-slate-400">Choisissez un nom d'utilisateur unique</p>
                     {% endif %}
                 </div>
 
@@ -45,38 +45,38 @@
 
                 <div>
                     <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-2">
-                        Password
+                        Mot de passe
                     </label>
                     {{ form.password1 }}
                     {% if form.password1.errors %}
                     <p class="mt-1 text-sm text-red-500">{{ form.password1.errors.0 }}</p>
                     {% else %}
-                    <p class="mt-1 text-xs text-slate-400">At least 8 characters</p>
+                    <p class="mt-1 text-xs text-slate-400">Au moins 8 caractères</p>
                     {% endif %}
                 </div>
 
                 <div>
                     <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-2">
-                        Confirm Password
+                        Confirmer le mot de passe
                     </label>
                     {{ form.password2 }}
                     {% if form.password2.errors %}
                     <p class="mt-1 text-sm text-red-500">{{ form.password2.errors.0 }}</p>
                     {% else %}
-                    <p class="mt-1 text-xs text-slate-400">Enter the same password again</p>
+                    <p class="mt-1 text-xs text-slate-400">Entrez le même mot de passe à nouveau</p>
                     {% endif %}
                 </div>
 
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 shadow-md">
-                    Create Account
+                    S'inscrire
                 </button>
             </form>
 
             <div class="mt-6 text-center">
                 <p class="text-slate-500">
-                    Already have an account? 
+                    Déjà un compte? 
                     <a href="{% url 'login' %}" class="text-blue-600 hover:text-blue-700 font-semibold transition-colors duration-200">
-                        Sign in
+                        Se connecter
                     </a>
                 </p>
             </div>

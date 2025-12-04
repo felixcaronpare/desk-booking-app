@@ -12,14 +12,14 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-slate-800">Desk Booking</h1>
+                    <h1 class="text-2xl font-bold text-slate-800">BookTonBureau</h1>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <span class="text-slate-600">Welcome, <span class="font-semibold text-slate-800">{{ user.username }}</span></span>
+                    <span class="text-slate-600">Bienvenue, <span class="font-semibold text-slate-800">{{ user.username }}</span></span>
                     <form method="post" action="{% url 'logout' %}" class="inline">
                         {% csrf_token %}
                         <button type="submit" class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg transition-all duration-200 font-medium">
-                            Logout
+                            Déconnecter
                         </button>
                     </form>
                 </div>

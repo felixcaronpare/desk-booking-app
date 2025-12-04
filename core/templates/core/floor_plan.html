@@ -1,6 +1,6 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Floor Plan - Desk Booking{% endblock %}
+{% block title %}BookTonBureau{% endblock %}
 
 {% block content %}
 <div class="w-full max-w-4xl mx-auto px-4 py-3">
@@ -46,7 +46,7 @@
             </div>
             {% else %}
             <div class="text-sm text-slate-500 font-medium px-2">
-                No booking for this day
+                Aucune réservation pour ce jour
             </div>
             {% endif %}
         </div>
@@ -102,15 +102,15 @@
     <div class="flex justify-center gap-8 text-sm font-medium text-slate-600">
         <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full bg-white border-2 border-slate-300"></div>
-            <span>Available</span>
+            <span>Disponible</span>
         </div>
         <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full bg-slate-200 border-2 border-slate-300"></div>
-            <span>Booked</span>
+            <span>Réservé</span>
         </div>
         <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full bg-emerald-100 border-2 border-emerald-500"></div>
-            <span>My Booking</span>
+            <span>Ma réservation</span>
         </div>
     </div>
 
