@@ -29,13 +29,28 @@
     {% endif %}
 
     {% if messages %}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+    <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4">
         {% for message in messages %}
-        <div class="{% if message.tags == 'error' %}bg-red-500/20 border-red-500 text-red-100{% elif message.tags == 'success' %}bg-green-500/20 border-green-500 text-green-100{% else %}bg-blue-500/20 border-blue-500 text-blue-100{% endif %} border-l-4 p-4 rounded-lg backdrop-blur-sm mb-4 animate-pulse">
+        <div class="snackbar {% if message.tags == 'error' %}bg-red-100 border-red-500{% elif message.tags == 'success' %}bg-green-100 border-green-500{% else %}bg-blue-100 border-blue-500{% endif %} border-l-4 p-4 rounded-lg shadow-lg mb-3 text-slate-800 font-medium">
             {{ message }}
         </div>
         {% endfor %}
     </div>
+    <script>
+        // Auto-dismiss snackbar notifications after 3 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const snackbars = document.querySelectorAll('.snackbar');
+            snackbars.forEach(function(snackbar) {
+                setTimeout(function() {
+                    snackbar.style.transition = 'opacity 0.5s ease-out';
+                    snackbar.style.opacity = '0';
+                    setTimeout(function() {
+                        snackbar.remove();
+                    }, 500);
+                }, 3000);
+            });
+        });
+    </script>
     {% endif %}
 
     {% block content %}
