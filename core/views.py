@@ -18,7 +18,7 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, f'Welcome {user.username}! Your account has been created.')
+            messages.success(request, f'Vous avez créé un compte avec succès {user.username}!')
             return redirect('floor_plan')
     else:
         form = UserRegistrationForm()
@@ -38,10 +38,10 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, f'Welcome back, {username}!')
+                messages.success(request, f'Bienvenue, {username}!')
                 return redirect('floor_plan')
         else:
-            messages.error(request, 'Invalid username or password.')
+            messages.error(request, 'Nom d\'utilisateur ou mot de passe invalide.')
     else:
         form = AuthenticationForm()
     
@@ -50,7 +50,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    messages.success(request, 'You have been logged out successfully.')
+    messages.success(request, 'Vous avez été déconnecté avec succès.')
     return redirect('login')
 
 
@@ -121,7 +121,7 @@ def book_desk(request, desk_id):
         try:
             date = datetime.strptime(date_str, '%Y-%m-%d').date()
         except ValueError:
-            messages.error(request, "Invalid date.")
+            messages.error(request, "Date invalide.")
             return redirect('floor_plan')
 
         # Validate date is within current work week
@@ -130,22 +130,22 @@ def book_desk(request, desk_id):
         end_of_week = start_of_week + timedelta(days=4)
         
         if date < start_of_week or date > end_of_week:
-             messages.error(request, "You can only book desks for the current work week (Mon-Fri).")
+             messages.error(request, "Vous pouvez seulement réserver des bureaux pour la semaine en cours (Mon - Fri).")
              return redirect('floor_plan')
 
         # Check if user already has a booking for this date
         if Booking.objects.filter(user=request.user, date=date).exists():
-            messages.error(request, "You already have a booking for this date.")
+            messages.error(request, "Vous avez déjà une réservation pour cette date.")
             return redirect(f'/floor_plan/?date={date_str}')
 
         # Check if desk is already booked
         if Booking.objects.filter(desk_id=desk_id, date=date).exists():
-            messages.error(request, "This desk is already booked.")
+            messages.error(request, "Ce bureau est déjà réservé.")
             return redirect(f'/floor_plan/?date={date_str}')
 
         desk = get_object_or_404(Desk, id=desk_id)
         Booking.objects.create(user=request.user, desk=desk, date=date)
-        messages.success(request, f"You have successfully booked {desk.name}.")
+        messages.success(request, f"Vous avez réservé avec succès {desk.name}.")
         return redirect(f'/floor_plan/?date={date_str}')
     
     return redirect('floor_plan')
@@ -156,7 +156,7 @@ def unbook_desk(request, booking_id):
         booking = get_object_or_404(Booking, id=booking_id, user=request.user)
         date_str = booking.date.strftime('%Y-%m-%d')
         booking.delete()
-        messages.success(request, "Booking cancelled.")
+        messages.success(request, "Votre réservation a été annulée.")
         return redirect(f'/floor_plan/?date={date_str}')
     
     return redirect('floor_plan')
