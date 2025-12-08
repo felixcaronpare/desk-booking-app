@@ -44,7 +44,7 @@ class Command(BaseCommand):
             {"number" : "24", "name": "Desk 24", "x": 91, "y": 65},
 
             # Bottom Right
-            {"number" : "25", "name": "Desk 25", "x": 91, "y": 85},
+            {"number" : "25", "name": "Desk 25", "x": 91, "y": 86},
             {"number" : "26", "name": "Desk 26", "x": 91, "y": 91},
         ]
 
