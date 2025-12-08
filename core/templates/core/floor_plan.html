@@ -97,7 +97,7 @@
                 <!-- Absolute Positioned Desks Overlay -->
                 <div class="absolute inset-0 w-full h-full">
                     {% for item in desk_data %}
-                    <div class="absolute group"
+                    <div class="absolute group hover:z-50"
                         style="left: {{ item.desk.x }}%; top: {{ item.desk.y }}%; transform: translate(-50%, -50%); width: 10%; aspect-ratio: 1.15;">
 
                         <!-- Desk Card -->
@@ -116,11 +116,11 @@
                             <!-- Desk Number -->
                             <span class="font-bold tracking-tight
                                 {% if item.status == 'available' %}
-                                    text-slate-700 text-2xl group-hover:text-blue-600
+                                    text-slate-700 text-xl group-hover:text-blue-600
                                 {% elif item.status == 'my_booking' %}
-                                    text-emerald-800 text-2xl
+                                    text-emerald-800 text-xl
                                 {% else %}
-                                    text-slate-500 text-2xl
+                                    text-slate-500 text-xl
                                 {% endif %}">
                                 {{ item.desk.number }}
                             </span>
@@ -134,9 +134,12 @@
                             {% endif %}
                         </div>
                         <!-- Tooltip for desk name -->
-                        <!-- <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20">
-                            {{ item.desk.name }}
-                        </div> -->
+                        {% if item.status == 'booked' and item.booked_by %}
+                        <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs py-1.5 px-2.5 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+                                <div class="font-bold">{{ item.booked_by }}</div>
+                                <div class="text-[10px] text-slate-300">{{ item.desk.name }}</div>
+                        </div>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>

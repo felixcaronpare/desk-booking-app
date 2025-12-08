@@ -123,20 +123,27 @@ def floor_plan(request):
     desks = Desk.objects.all()
     bookings = Booking.objects.filter(date=selected_date)
     
-    booked_desk_ids = bookings.values_list('desk_id', flat=True)
+    # Create a map of desk_id to booking object (to access user)
+    desk_booking_map = {booking.desk_id: booking for booking in bookings}
+    
     my_booking = bookings.filter(user=request.user).first()
     
     desk_data = []
     for desk in desks:
         status = 'available'
-        if desk.id in booked_desk_ids:
-            status = 'booked'
+        booked_by_name = None
+
+        if desk.id in desk_booking_map:
+             status = 'booked'
+             booked_by_name = desk_booking_map[desk.id].user.username
+
         if my_booking and my_booking.desk.id == desk.id:
             status = 'my_booking'
             
         desk_data.append({
             'desk': desk,
-            'status': status
+            'status': status,
+            'booked_by': booked_by_name
         })
 
     context = {
