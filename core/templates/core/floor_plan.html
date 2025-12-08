@@ -63,7 +63,7 @@
             {% if my_booking %}
             <div class="flex-1 min-w-0 bg-white rounded-2xl shadow-lg border border-slate-200 p-2 lg:p-4 flex flex-col justify-center">
                 <div class="flex flex-col gap-1 lg:gap-3">
-                    <div class="hidden lg:block text-sm text-slate-500 font-medium uppercase tracking-wider truncate">Your Booking</div>
+                    <div class="hidden lg:block text-sm text-slate-500 font-medium uppercase tracking-wider truncate">Votre réservation</div>
                     <div class="flex flex-row lg:flex-col xl:flex-row items-center justify-between bg-emerald-50 px-3 py-1.5 lg:px-4 lg:py-3 rounded-xl border border-emerald-100 gap-2">
                         <span class="font-bold text-emerald-900 text-sm lg:text-lg truncate">{{ my_booking.desk.name }}</span>
                         <form method="post" action="{% url 'unbook_desk' my_booking.id %}">
@@ -100,7 +100,7 @@
 
         <!-- Right Column: Floor Plan -->
         <div class="flex justify-center items-start">
-            <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-1 mb-3 relative overflow-hidden inline-block transition-all duration-500 ease-in-out">
+            <div class="bg-white rounded-1xl shadow-2xl border border-slate-200 p-1 mb-3 relative overflow-hidden inline-block transition-all duration-500 ease-in-out">
                 
                 <!-- Background Image (Drives dimensions) -->
                 {% load static %}
