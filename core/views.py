@@ -57,17 +57,41 @@ def logout_view(request):
 @login_required
 def floor_plan(request):
     today = timezone.now().date()
-    # Calculate start of the week (Monday)
-    start_of_week = today - timedelta(days=today.weekday())
     
-    # Generate list of 5 workdays (Mon-Fri)
-    week_days = []
-    for i in range(5):
-        day = start_of_week + timedelta(days=i)
-        week_days.append({
+    # Get the current month's start and end
+    import calendar
+    _, last_day = calendar.monthrange(today.year, today.month)
+    start_of_month = today.replace(day=1)
+    end_of_month = today.replace(day=last_day)
+    
+    # Generate list of Mon-Fri days in the month
+    month_days = []
+    
+    currentUserBookings = Booking.objects.filter(
+        user=request.user, 
+        date__range=[start_of_month, end_of_month]
+    ).values_list('date', flat=True)
+
+    added_first_day = False
+    
+    for i in range(last_day):
+        day = start_of_month + timedelta(days=i)
+        
+        # Skip Saturday (5) and Sunday (6)
+        if day.weekday() >= 5:
+            continue
+            
+        # Add padding for the first week to align dates with Mon-Fri columns
+        if not added_first_day:
+            for _ in range(day.weekday()):
+                month_days.append(None)
+            added_first_day = True
+            
+        month_days.append({
             'date': day,
             'day_name': day.strftime('%A'),
-            'is_today': day == today
+            'is_today': day == today,
+            'has_booking': day in currentUserBookings
         })
 
     date_str = request.GET.get('date')
@@ -79,13 +103,22 @@ def floor_plan(request):
     else:
         selected_date = today
 
-    # Ensure selected date is within the current work week (Mon-Fri)
-    # If not, default to Monday of current week (or today if it's a workday)
-    if selected_date < start_of_week or selected_date > start_of_week + timedelta(days=4):
-         if today >= start_of_week and today <= start_of_week + timedelta(days=4):
-             selected_date = today
-         else:
-             selected_date = start_of_week
+    # Validate selected date is within the displayed month
+    if selected_date.month != today.month or selected_date.year != today.year:
+        selected_date = today
+        
+    # If selected date is a weekend, default to today (or nearest weekday if today is weekend)
+    if selected_date.weekday() >= 5:
+        selected_date = today
+        # If today is also weekend, find next Monday
+        if selected_date.weekday() >= 5:
+             days_ahead = 7 - selected_date.weekday() # 0=Mon
+             selected_date = selected_date + timedelta(days=days_ahead)
+             # Check if we jumped to next month
+             if selected_date.month != today.month:
+                 selected_date = today.replace(day=1) 
+                 while selected_date.weekday() >= 5:
+                     selected_date += timedelta(days=1)
 
     desks = Desk.objects.all()
     bookings = Booking.objects.filter(date=selected_date)
@@ -110,7 +143,7 @@ def floor_plan(request):
         'desk_data': desk_data,
         'selected_date': selected_date,
         'my_booking': my_booking,
-        'week_days': week_days,
+        'month_days': month_days, 
     }
     return render(request, 'core/floor_plan.html', context)
 
@@ -124,14 +157,20 @@ def book_desk(request, desk_id):
             messages.error(request, "Date invalide.")
             return redirect('floor_plan')
 
-        # Validate date is within current work week
+        # Validate date is within current month (or reasonable range)
         today = timezone.now().date()
-        start_of_week = today - timedelta(days=today.weekday())
-        end_of_week = start_of_week + timedelta(days=4)
+        import calendar
+        _, last_day = calendar.monthrange(today.year, today.month)
+        start_of_month = today.replace(day=1)
+        end_of_month = today.replace(day=last_day)
         
-        if date < start_of_week or date > end_of_week:
-             messages.error(request, "Vous pouvez seulement réserver des bureaux pour la semaine en cours (Mon - Fri).")
+        if date < start_of_month or date > end_of_month:
+             messages.error(request, "Vous pouvez seulement réserver des bureaux pour le mois en cours.")
              return redirect('floor_plan')
+             
+        if date.weekday() >= 5:
+            messages.error(request, "Les réservations sont fermées le week-end.")
+            return redirect(f'/floor_plan/?date={date_str}')
 
         # Check if user already has a booking for this date
         if Booking.objects.filter(user=request.user, date=date).exists():
