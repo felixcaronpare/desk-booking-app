@@ -5,14 +5,28 @@
 {% block content %}
 <div class="w-full max-w-7xl mx-auto px-4 py-6">
 
-    <div class="flex flex-col lg:flex-row gap-6 items-start justify-center">
+    <div class="flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center">
         
         <!-- Left Column: Calendar & Status -->
-        <div class="w-full lg:w-80 flex-shrink-0 space-y-4">
+        <div class="w-full lg:w-80 flex-shrink-0 gap-3 flex flex-row lg:flex-col items-stretch lg:items-stretch">
             
+            <!-- Mobile Date Picker Button -->
+            <button type="button" onclick="document.getElementById('mobile-date-modal').classList.remove('hidden')" 
+                class="lg:hidden flex-1 bg-[#1877F2] hover:bg-[#165CBE] text-white border-2 border-white py-2 px-3 rounded-xl shadow-sm flex flex-row justify-center items-center gap-2 group active:scale-95 transition-all relative overflow-hidden">
+                <div class="absolute inset-0 bg-blue-50 opacity-0 group-hover:opacity-120 transition-opacity"></div>
+                
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white flex-shrink-0 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                
+                <span class="relative z-10 font-bold text-white text-sm group-hover:text-white transition-colors whitespace-nowrap">
+                    {{ selected_date|date:"j M" }}
+                </span>
+            </button>
+
             <!-- Calendar Grid -->
-            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-4">
-                <h2 class="text-lg font-bold text-slate-700 mb-4 px-1">Select Date</h2>
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-4 hidden lg:block">
+                <h2 class="text-lg font-bold text-slate-700 mb-4 px-1">{{ selected_date|date:"F Y" }}</h2>
                 
                 <!-- Weekday Headers -->
                 <div class="grid grid-cols-5 gap-1 mb-2 text-center">
@@ -47,15 +61,15 @@
 
             <!-- My Booking Status -->
             {% if my_booking %}
-            <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-4">
-                <div class="flex flex-col gap-3">
-                    <div class="text-sm text-slate-500 font-medium uppercase tracking-wider">Your Booking</div>
-                    <div class="flex items-center justify-between bg-emerald-50 px-4 py-3 rounded-xl border border-emerald-100">
-                        <span class="font-bold text-emerald-900 text-lg">{{ my_booking.desk.name }}</span>
+            <div class="flex-1 min-w-0 bg-white rounded-2xl shadow-lg border border-slate-200 p-2 lg:p-4 flex flex-col justify-center">
+                <div class="flex flex-col gap-1 lg:gap-3">
+                    <div class="hidden lg:block text-sm text-slate-500 font-medium uppercase tracking-wider truncate">Your Booking</div>
+                    <div class="flex flex-row lg:flex-col xl:flex-row items-center justify-between bg-emerald-50 px-3 py-1.5 lg:px-4 lg:py-3 rounded-xl border border-emerald-100 gap-2">
+                        <span class="font-bold text-emerald-900 text-sm lg:text-lg truncate">{{ my_booking.desk.name }}</span>
                         <form method="post" action="{% url 'unbook_desk' my_booking.id %}">
                             {% csrf_token %}
                             <button type="submit"
-                                class="text-xs bg-white text-emerald-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 border border-emerald-200 px-3 py-1.5 rounded-md font-semibold transition-all duration-200">
+                                class="text-xs bg-white text-emerald-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 border border-emerald-200 px-2 py-1 lg:px-3 lg:py-1.5 rounded-md font-semibold transition-all duration-200 whitespace-nowrap">
                                 Cancel
                             </button>
                         </form>
@@ -65,7 +79,7 @@
             {% endif %}
 
             <!-- Legend (Moved to left column for better space usage) -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 hidden lg:block">
                 <div class="flex flex-col gap-3 text-sm font-medium text-slate-600">
                     <div class="flex items-center gap-3">
                         <div class="w-3 h-3 rounded-full bg-white border-2 border-slate-300"></div>
@@ -148,5 +162,57 @@
 
     </div>
 
+</div>
+
+<!-- Mobile Date Modal -->
+<div id="mobile-date-modal" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
+         onclick="document.getElementById('mobile-date-modal').classList.add('hidden')"></div>
+    
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 text-center">
+            <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all w-full max-w-sm border border-slate-100">
+                <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <h3 class="text-lg font-bold text-slate-800" id="modal-title">Select Date</h3>
+                    <button onclick="document.getElementById('mobile-date-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 p-1 hover:bg-slate-100 rounded-full transition-colors">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Weekday Headers -->
+                    <div class="grid grid-cols-5 gap-2 mb-3 text-center">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Mon</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tue</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Wed</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Thu</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Fri</span>
+                    </div>
+
+                    <div class="grid grid-cols-5 gap-2">
+                        {% for day in month_days %}
+                            {% if day is None %}
+                                <div class="aspect-square"></div>
+                            {% else %}
+                                <a href="?date={{ day.date|date:'Y-m-d' }}" 
+                                   class="flex flex-col items-center justify-center p-1 rounded-xl text-sm font-semibold transition-all duration-200 border aspect-square shadow-sm
+                                       {% if day.date == selected_date %}
+                                           bg-blue-600 text-white border-blue-600 shadow-blue-200
+                                       {% elif day.has_booking %}
+                                            bg-emerald-50 text-emerald-700 border-emerald-100
+                                       {% else %}
+                                           bg-white text-slate-600 border-slate-100 hover:border-blue-400 hover:text-blue-600
+                                       {% endif %}">
+                                    {{ day.date|date:"j" }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
