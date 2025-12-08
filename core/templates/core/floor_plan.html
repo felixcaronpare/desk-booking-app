@@ -104,7 +104,8 @@
                 
                 <!-- Background Image (Drives dimensions) -->
                 {% load static %}
-                <img src="{% static 'core/images/floor_plan_bg.png' %}" alt="Floor Plan Background" 
+                <img id="floor-plan-bg" hx-preserve="true" 
+                     src="{% static 'core/images/floor_plan_bg.png' %}" alt="Floor Plan Background" 
                      class="block object-contain"
                      style="max-height: calc(100vh - 140px); max-width: 100%; height: auto; width: auto;">
 
@@ -124,7 +125,7 @@
                                     bg-slate-200/90 border-slate-400 cursor-not-allowed opacity-75
                                 {% endif %}" 
                             {% if item.status == "available" %}
-                            onclick="document.getElementById('book-form-{{ item.desk.id }}').submit();" 
+                            onclick="document.getElementById('book-form-{{ item.desk.id }}').requestSubmit();" 
                             {% endif %}>
                             
                             <!-- Desk Number -->
