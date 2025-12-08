@@ -68,20 +68,20 @@
         </div>
 
         <!-- Right Column: Floor Plan -->
-        <div class="flex-grow w-full">
-            <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-1 mb-3 relative overflow-hidden w-full transition-all duration-500 ease-in-out" style="aspect-ratio: 16/9;"> <!-- Changed aspect ratio to match ~1920x1080 approx -->
-                <!-- Background Image -->
-                <div class="absolute inset-0 w-full h-full">
-                    {% load static %}
-                    <img src="{% static 'core/images/floor_plan_bg.png' %}" alt="Floor Plan Background" class="w-full h-full object-fill">
-                </div>
+        <div class="flex-grow w-full flex justify-center items-start">
+            <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-1 mb-3 relative overflow-hidden inline-block transition-all duration-500 ease-in-out">
+                
+                <!-- Background Image (Drives dimensions) -->
+                {% load static %}
+                <img src="{% static 'core/images/floor_plan_bg.png' %}" alt="Floor Plan Background" 
+                     class="block object-contain"
+                     style="max-height: calc(100vh - 140px); max-width: 100%; height: auto; width: auto;">
 
-                <!-- Absolute Positioned Desks -->
-                <div class="relative w-full h-full">
+                <!-- Absolute Positioned Desks Overlay -->
+                <div class="absolute inset-0 w-full h-full">
                     {% for item in desk_data %}
-                    <!-- Desk positioning might need adjustment if the image aspect ratio changed significantly, but keeping relative % should work if the map is same scale -->
                     <div class="absolute group"
-                        style="left: {{ item.desk.x }}%; top: {{ item.desk.y }}%; transform: translate(-50%, -50%); width: 6%; aspect-ratio: 1;"> <!-- Adjusted desk size slightly -->
+                        style="left: {{ item.desk.x }}%; top: {{ item.desk.y }}%; transform: translate(-50%, -50%); width: 6%; aspect-ratio: 1;">
 
                         <!-- Desk Card -->
                         <div class="w-full h-full rounded-md flex flex-col items-center justify-center transition-all duration-300 border shadow-sm
