@@ -82,11 +82,11 @@
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 hidden lg:block">
                 <div class="flex flex-col gap-3 text-sm font-medium text-slate-600">
                     <div class="flex items-center gap-3">
-                        <div class="w-3 h-3 rounded-full bg-white border-2 border-slate-300"></div>
+                        <div class="w-3 h-3 rounded-full bg-white border-2 border-slate-500"></div>
                         <span>Disponible</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="w-3 h-3 rounded-full bg-slate-200 border-2 border-slate-300"></div>
+                        <div class="w-3 h-3 rounded-full bg-red-200 border-2 border-red-500"></div>
                         <span>Réservé</span>
                     </div>
                     <div class="flex items-center gap-3">
@@ -122,7 +122,7 @@
                                 {% elif item.status == 'my_booking' %}
                                     bg-gradient-to-br from-emerald-100 to-emerald-200 border-emerald-500 shadow-xl ring-2 ring-emerald-400/50
                                 {% else %}
-                                    bg-slate-200/90 border-slate-400 cursor-not-allowed opacity-75
+                                    bg-red-200/90 border-red-500 cursor-not-allowed opacity-75
                                 {% endif %}" 
                             {% if item.status == "available" %}
                             onclick="document.getElementById('book-form-{{ item.desk.id }}').requestSubmit();" 
@@ -135,7 +135,7 @@
                                 {% elif item.status == 'my_booking' %}
                                     text-emerald-800 text-xl
                                 {% else %}
-                                    text-slate-500 text-xl
+                                    text-red-700 text-xl
                                 {% endif %}">
                                 {{ item.desk.number }}
                             </span>
